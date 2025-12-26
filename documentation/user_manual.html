@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieFinder - User Manual</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            background: white;
+            padding: 60px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            border-bottom: 4px solid #3498db;
+            padding-bottom: 15px;
+        }
+
+        h2 {
+            color: #34495e;
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            border-left: 5px solid #3498db;
+            padding-left: 15px;
+        }
+
+        h3 {
+            color: #2c3e50;
+            font-size: 1.3em;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+
+        .version-info {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .feature-card h3 {
+            color: white;
+            margin-top: 0;
+        }
+
+        .feature-card .query-badge {
+            background: rgba(255,255,255,0.3);
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            margin-top: 10px;
+        }
+
+        .mockup-container {
+            background: #2c3e50;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .mockup-window {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .mockup-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .mockup-subheader {
+            background: #34495e;
+            color: white;
+            padding: 12px 20px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .mockup-body {
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .button-large {
+            background: white;
+            border: 2px solid #3498db;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.1em;
+        }
+
+        .button-large:hover {
+            background: #3498db;
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .icon {
+            font-size: 1.5em;
+        }
+
+        .movie-result {
+            background: white;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .movie-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .rating {
+            color: #f39c12;
+            font-size: 1.1em;
+            float: right;
+        }
+
+        .movie-overview {
+            color: #7f8c8d;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .stats-table {
+            width: 100%;
+            background: white;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .stats-table th {
+            background: #34495e;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .stats-table td {
+            padding: 12px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .stats-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .collab-card {
+            background: white;
+            border-left: 4px solid #9b59b6;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .collab-name {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+
+        .collab-count {
+            float: right;
+            background: #9b59b6;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+
+        .collab-movies {
+            color: #7f8c8d;
+            margin-top: 10px;
+            font-size: 0.95em;
+        }
+
+        .filter-bar {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .filter-bar select {
+            padding: 8px 15px;
+            border: 2px solid #3498db;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .filter-bar button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .how-to-section {
+            background: #ecf0f1;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid #3498db;
+        }
+
+        .how-to-section ol {
+            margin-left: 25px;
+            margin-top: 15px;
+        }
+
+        .how-to-section li {
+            margin: 10px 0;
+            line-height: 1.8;
+        }
+
+        .backend-query {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin-top: 15px;
+            font-size: 0.95em;
+        }
+
+        ul {
+            margin-left: 30px;
+            margin-top: 10px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        strong {
+            color: #2c3e50;
+        }
+
+        .note-box {
+            background: #d1ecf1;
+            border-left: 5px solid #0c5460;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 5px;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+            .mockup-container {
+                background: #f5f5f5;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MovieFinder</h1>
+        <p class="subtitle">User Manual - Discover Your Next Favorite Film</p>
+
+        <div class="version-info">
+            <strong>Version:</strong> 1.0<br>
+            <strong>Date:</strong> January 2026<br>
+            <strong>Course:</strong> Database Management Systems - Assignment 3
+        </div>
+
+        <!-- APPLICATION OVERVIEW -->
+        <h2>1. Application Overview</h2>
+
+        <h3>What is MovieFinder?</h3>
+        <p>MovieFinder is a web application designed for <strong>movie enthusiasts</strong> who want to discover and explore films based on various criteria such as plot themes, actors, directors, genres, and ratings. The application provides powerful search and analysis tools to help users find their next favorite movie.</p>
+
+        <h3>Target Audience</h3>
+        <ul>
+            <li><strong>Movie Fans:</strong> People looking to discover new movies based on their interests</li>
+            <li><strong>Film Students:</strong> Users researching movies, directors, and actor collaborations</li>
+            <li><strong>Casual Browsers:</strong> Anyone exploring movies by genre, ratings, or popularity</li>
+        </ul>
+
+        <h3>Key Capabilities</h3>
+        <ul>
+            <li>Search movies by plot keywords and themes</li>
+            <li>Find movies by title</li>
+            <li>Analyze genre trends and ratings</li>
+            <li>Discover actor collaborations</li>
+            <li>Explore director filmographies</li>
+        </ul>
+
+        <!-- APPLICATION FEATURES -->
+        <h2>2. Application Features</h2>
+
+        <div class="feature-card">
+            <h3>Feature 1: Plot Keyword Search</h3>
+            <p>Search for movies by entering keywords related to the plot or theme. For example:</p>
+            <ul style="margin-top: 10px;">
+                <li>"space exploration"</li>
+                <li>"time travel"</li>
+                <li>"artificial intelligence"</li>
+            </ul>
+            <p style="margin-top: 15px;">The system searches through movie descriptions and ranks results by relevance and rating.</p>
+            <p><strong>Use Case:</strong> Finding all sci-fi movies about space exploration</p>
+            <div class="query-badge">Query Used: Full-Text Search on Movie Overview</div>
+        </div>
+
+        <div class="feature-card">
+            <h3>Feature 2: Title Search</h3>
+            <p>Quickly find movies by searching for keywords in the title. The search supports partial matches and ranks by relevance.</p>
+            <p style="margin-top: 15px;"><strong>Use Case:</strong> Finding all movies with "Star" in the title (Star Wars, Star Trek, etc.)</p>
+            <div class="query-badge">Query Used: Full-Text Search on Movie Title</div>
+        </div>
+
+        <div class="feature-card">
+            <h3>Feature 3: Genre Analytics Dashboard</h3>
+            <p>View comprehensive statistics for each genre including:</p>
+            <ul style="margin-top: 10px;">
+                <li>Average rating</li>
+                <li>Number of movies</li>
+                <li>Total and average revenue</li>
+            </ul>
+            <p style="margin-top: 15px;">Filter by minimum number of movies to focus on well-represented genres.</p>
+            <p><strong>Use Case:</strong> Discovering which genres tend to have the highest-rated content</p>
+            <div class="query-badge">Query Used: Aggregation with GROUP BY and HAVING</div>
+        </div>
+
+        <div class="feature-card">
+            <h3>Feature 4: Actor Collaboration Finder</h3>
+            <p>Discover which actors frequently work together. Enter an actor's name and find all their collaborators who have appeared in multiple movies with them.</p>
+            <p style="margin-top: 15px;"><strong>Use Case:</strong> Finding all actors who have worked with Tom Hanks in 3 or more movies</p>
+            <div class="query-badge">Query Used: Nested Query with EXISTS</div>
+        </div>
+
+        <div class="feature-card">
+            <h3>Feature 5: Director Filmography Explorer</h3>
+            <p>Explore a director's highest-rated films along with their top cast members. Filter by minimum rating to see only their best work.</p>
+            <p style="margin-top: 15px;"><strong>Use Case:</strong> Viewing Christopher Nolan's films rated 8.0 or higher with their lead actors</p>
+            <div class="query-badge">Query Used: Complex JOIN with Nested Subquery</div>
+        </div>
+
+        <!-- USER INTERFACE MOCKUPS -->
+        <h2>3. User Interface Mockups</h2>
+
+        <h3>Page 1: Home Page</h3>
+        <div class="mockup-container">
+            <div class="mockup-window">
+                <div class="mockup-header">
+                    MOVIEFINDER<br>
+                    <span style="font-size: 0.7em; opacity: 0.9;">Discover Your Next Favorite Film</span>
+                </div>
+                <div class="mockup-body">
+                    <h4 style="margin-bottom: 20px; color: #2c3e50;">Search Options:</h4>
+
+                    <div class="button-large">
+                        <span class="icon">🔍</span>
+                        <div>
+                            <strong>Search by Plot Keywords</strong><br>
+                            <span style="font-size: 0.85em; color: #7f8c8d;">(e.g., "space exploration", "time travel")</span>
+                        </div>
+                    </div>
+
+                    <div class="button-large">
+                        <span class="icon">🎬</span>
+                        <div>
+                            <strong>Search by Movie Title</strong><br>
+                            <span style="font-size: 0.85em; color: #7f8c8d;">(e.g., "Star", "Dark Knight")</span>
+                        </div>
+                    </div>
+
+                    <div class="button-large">
+                        <span class="icon">📊</span>
+                        <strong>Genre Analytics</strong>
+                    </div>
+
+                    <div class="button-large">
+                        <span class="icon">👥</span>
+                        <strong>Actor Collaborations</strong>
+                    </div>
+
+                    <div class="button-large">
+                        <span class="icon">🎥</span>
+                        <strong>Director Filmography</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3>Page 2: Plot Keyword Search Results</h3>
+        <div class="mockup-container">
+            <div class="mockup-window">
+                <div class="mockup-subheader">
+                    MovieFinder > Search > "space exploration"
+                </div>
+                <div class="mockup-body">
+                    <p style="margin-bottom: 20px; color: #2c3e50;"><strong>Found 15 movies matching "space exploration"</strong></p>
+
+                    <div class="movie-result">
+                        <div class="movie-title">
+                            1. Interstellar (2014)
+                            <span class="rating">⭐ 8.6</span>
+                        </div>
+                        <div class="movie-overview">
+                            A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival...
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <a href="#" style="color: #3498db; text-decoration: none; font-weight: bold;">[View Details]</a>
+                        </div>
+                    </div>
+
+                    <div class="movie-result">
+                        <div class="movie-title">
+                            2. The Martian (2015)
+                            <span class="rating">⭐ 7.7</span>
+                        </div>
+                        <div class="movie-overview">
+                            An astronaut becomes stranded on Mars after his team assume he is dead, and must rely on his ingenuity to find a way to signal...
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <a href="#" style="color: #3498db; text-decoration: none; font-weight: bold;">[View Details]</a>
+                        </div>
+                    </div>
+
+                    <p style="margin-top: 20px; text-align: center; color: #7f8c8d;"><em>[More results...]</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h3>Page 3: Genre Analytics Dashboard</h3>
+        <div class="mockup-container">
+            <div class="mockup-window">
+                <div class="mockup-subheader">
+                    MovieFinder > Analytics > Genres (20+ movies)
+                </div>
+                <div class="mockup-body">
+                    <h4 style="margin-bottom: 20px; color: #2c3e50;">Genre Performance Analysis</h4>
+
+                    <table class="stats-table">
+                        <thead>
+                            <tr>
+                                <th>Genre</th>
+                                <th>Avg Rating</th>
+                                <th>Movies</th>
+                                <th>Total Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Animation</strong></td>
+                                <td>7.2</td>
+                                <td>156</td>
+                                <td>$45.2B</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Drama</strong></td>
+                                <td>6.8</td>
+                                <td>892</td>
+                                <td>$32.1B</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Adventure</strong></td>
+                                <td>6.7</td>
+                                <td>234</td>
+                                <td>$58.9B</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Thriller</strong></td>
+                                <td>6.5</td>
+                                <td>189</td>
+                                <td>$28.7B</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Comedy</strong></td>
+                                <td>6.3</td>
+                                <td>312</td>
+                                <td>$22.4B</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="filter-bar">
+                        <span>Filter:</span>
+                        <select>
+                            <option>Minimum Movies: 20</option>
+                            <option>Minimum Movies: 50</option>
+                            <option>Minimum Movies: 100</option>
+                        </select>
+                        <button>Apply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3>Page 4: Actor Collaboration Finder</h3>
+        <div class="mockup-container">
+            <div class="mockup-window">
+                <div class="mockup-subheader">
+                    MovieFinder > Collaborations > "Tom Hanks"
+                </div>
+                <div class="mockup-body">
+                    <h4 style="margin-bottom: 20px; color: #2c3e50;">Actors who frequently worked with Tom Hanks:</h4>
+
+                    <div class="collab-card">
+                        <div class="collab-name">
+                            Meg Ryan
+                            <span class="collab-count">4 collaborations</span>
+                        </div>
+                        <div class="collab-movies">
+                            Movies: Sleepless in Seattle, You've Got Mail, Joe Versus the Volcano, ...
+                        </div>
+                    </div>
+
+                    <div class="collab-card">
+                        <div class="collab-name">
+                            Gary Sinise
+                            <span class="collab-count">3 collaborations</span>
+                        </div>
+                        <div class="collab-movies">
+                            Movies: Forrest Gump, Apollo 13, The Green Mile
+                        </div>
+                    </div>
+
+                    <p style="margin-top: 20px; text-align: center;">
+                        <a href="#" style="color: #3498db; text-decoration: none; font-weight: bold;">[Show more...]</a>
+                    </p>
+
+                    <div class="filter-bar">
+                        <span>Minimum collaborations:</span>
+                        <select>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>5</option>
+                        </select>
+                        <button>Search another actor</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3>Page 5: Director Filmography</h3>
+        <div class="mockup-container">
+            <div class="mockup-window">
+                <div class="mockup-subheader">
+                    MovieFinder > Directors > "Christopher Nolan"
+                </div>
+                <div class="mockup-body">
+                    <h4 style="margin-bottom: 20px; color: #2c3e50;">Christopher Nolan's Highest-Rated Films (Rating ≥ 8.0)</h4>
+
+                    <div class="movie-result">
+                        <div class="movie-title">
+                            The Dark Knight (2008)
+                            <span class="rating">⭐ 9.0</span>
+                        </div>
+                        <div style="margin-top: 10px; color: #7f8c8d;">
+                            <strong>Revenue:</strong> $1.00B<br>
+                            <strong>Starring:</strong> Christian Bale, Heath Ledger, Aaron Eckhart
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <a href="#" style="color: #3498db; text-decoration: none; font-weight: bold;">[View Details]</a>
+                        </div>
+                    </div>
+
+                    <div class="movie-result">
+                        <div class="movie-title">
+                            Inception (2010)
+                            <span class="rating">⭐ 8.8</span>
+                        </div>
+                        <div style="margin-top: 10px; color: #7f8c8d;">
+                            <strong>Revenue:</strong> $829M<br>
+                            <strong>Starring:</strong> Leonardo DiCaprio, Joseph Gordon-Levitt, Elliot Page
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <a href="#" style="color: #3498db; text-decoration: none; font-weight: bold;">[View Details]</a>
+                        </div>
+                    </div>
+
+                    <div class="filter-bar">
+                        <span>Minimum rating:</span>
+                        <select>
+                            <option>8.0</option>
+                            <option>7.5</option>
+                            <option>7.0</option>
+                        </select>
+                        <button>Search another director</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HOW TO USE -->
+        <h2>4. How to Use Each Feature</h2>
+
+        <div class="how-to-section">
+            <h3>Using Plot Keyword Search</h3>
+            <ol>
+                <li>From the home page, click <strong>"Search by Plot Keywords"</strong></li>
+                <li>Enter keywords describing the plot or theme (e.g., "time travel", "heist")</li>
+                <li>Click <strong>Search</strong></li>
+                <li>Browse results ranked by relevance and rating</li>
+                <li>Click <strong>View Details</strong> on any movie for more information</li>
+            </ol>
+            <div class="backend-query">Backend Query: query_1(connection, keywords)</div>
+        </div>
+
+        <div class="how-to-section">
+            <h3>Using Title Search</h3>
+            <ol>
+                <li>From the home page, click <strong>"Search by Movie Title"</strong></li>
+                <li>Enter a word or phrase from the movie title</li>
+                <li>Click <strong>Search</strong></li>
+                <li>Results show movies with matching titles, ranked by relevance</li>
+                <li>Click on any movie to view details</li>
+            </ol>
+            <div class="backend-query">Backend Query: query_2(connection, search_term)</div>
+        </div>
+
+        <div class="how-to-section">
+            <h3>Using Genre Analytics</h3>
+            <ol>
+                <li>From the home page, click <strong>"Genre Analytics"</strong></li>
+                <li>Select minimum number of movies to filter genres (default: 20)</li>
+                <li>View the table showing:
+                    <ul style="margin-top: 5px;">
+                        <li>Average rating per genre</li>
+                        <li>Number of movies in each genre</li>
+                        <li>Total revenue by genre</li>
+                    </ul>
+                </li>
+                <li>Sort by any column to analyze different aspects</li>
+            </ol>
+            <div class="backend-query">Backend Query: query_3(connection, min_movies)</div>
+        </div>
+
+        <div class="how-to-section">
+            <h3>Finding Actor Collaborations</h3>
+            <ol>
+                <li>From the home page, click <strong>"Actor Collaborations"</strong></li>
+                <li>Enter an actor's name</li>
+                <li>Set minimum number of collaborations (default: 2)</li>
+                <li>Click <strong>Search</strong></li>
+                <li>View list of actors who frequently worked together</li>
+                <li>See the movies they appeared in together</li>
+            </ol>
+            <div class="backend-query">Backend Query: query_4(connection, actor_name, min_collaborations)</div>
+        </div>
+
+        <div class="how-to-section">
+            <h3>Exploring Director Filmography</h3>
+            <ol>
+                <li>From the home page, click <strong>"Director Filmography"</strong></li>
+                <li>Enter a director's name</li>
+                <li>Set minimum rating threshold (default: 7.0)</li>
+                <li>Click <strong>Search</strong></li>
+                <li>View the director's highest-rated films</li>
+                <li>See top cast members for each film</li>
+                <li>View revenue information</li>
+            </ol>
+            <div class="backend-query">Backend Query: query_5(connection, director_name, min_rating)</div>
+        </div>
+
+        <!-- CONCLUSION -->
+        <h2>5. Conclusion</h2>
+        <p>MovieFinder provides a comprehensive and intuitive interface for movie discovery and analysis. Each feature is powered by efficient database queries that leverage full-text search, complex joins, and aggregations to deliver fast, relevant results.</p>
+
+        <p style="margin-top: 20px;">For technical documentation and implementation details, please refer to the <strong>System Documentation</strong>.</p>
+
+        <div class="note-box">
+            <strong>Note:</strong> This is a documentation-only submission. The actual web interface is not implemented, but all backend queries are fully functional and tested with real data from The Movie Database (TMDb) API.
+        </div>
+
+        <div style="margin-top: 50px; padding-top: 20px; border-top: 2px solid #ecf0f1; text-align: center; color: #7f8c8d;">
+            <p>MovieFinder User Manual</p>
+            <p>Version 1.0 - January 2026</p>
+        </div>
+    </div>
+</body>
+</html>

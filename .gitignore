@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Logs
+*.log
+*.out
+
+# Environment variables with secrets
+.env
+
+# Database credentials
+documentation/mysql_and_user_password.txt
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Backups
+*_backup.*
+*.bak
