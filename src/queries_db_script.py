@@ -145,7 +145,7 @@ def query_3(connection, min_movies=20):
 
 def query_4(connection, actor_name, min_collaborations=2):
     """
-    Query 4: Actor Collaboration Finder (Complex - Nested Query, EXISTS)
+    Query 4: Actor Collaboration Finder (Complex - Self-Join, GROUP BY, HAVING)
 
     Find all actors who have appeared in at least X movies with a specific actor,
     showing their names and the count of collaborations.
@@ -161,7 +161,7 @@ def query_4(connection, actor_name, min_collaborations=2):
     cursor = connection.cursor()
 
     try:
-        # Complex query with nested subquery and EXISTS clause
+        # Complex query with self-join and aggregation
         query = """
         SELECT
             p2.name AS collaborator_name,
@@ -179,12 +179,6 @@ def query_4(connection, actor_name, min_collaborations=2):
         WHERE
             p1.name LIKE %s
             AND p2.person_id != p1.person_id
-            AND EXISTS (
-                SELECT 1
-                FROM movie_cast mc3
-                WHERE mc3.movie_id = mc1.movie_id
-                  AND mc3.person_id = p2.person_id
-            )
         GROUP BY p2.person_id, p2.name
         HAVING COUNT(DISTINCT mc2.movie_id) >= %s
         ORDER BY collaboration_count DESC, p2.name

@@ -122,6 +122,7 @@
             font-size: 0.9em;
             line-height: 1.5;
             margin: 15px 0;
+            white-space: pre-wrap;
         }
 
         .sql-keyword {
@@ -255,6 +256,7 @@
                 background: #f5f5f5;
                 color: #2c3e50;
                 border: 1px solid #ddd;
+                white-space: pre-wrap;
             }
         }
     </style>
@@ -769,17 +771,6 @@
                 </ul>
                 <p><em>Alternative Considered:</em> Single "participation" table with nullable columns. Rejected due to sparse matrix problem and unclear semantics.</p>
             </div>
-
-            <div class="index-item">
-                <strong>Removed Unreliable Fields</strong><br>
-                <p>Initially planned to include biography, birthday, and place_of_birth in the people table. These were removed because:</p>
-                <ul style="margin-left: 20px; margin-top: 10px;">
-                    <li>TMDb API returns NULL for most people in movie credits</li>
-                    <li>Would require individual API calls for each person (5,000+ calls)</li>
-                    <li>Not essential for our query functionality</li>
-                </ul>
-                <p>Result: Clean schema with 100% populated fields, no wasted storage on NULL values.</p>
-            </div>
         </div>
 
         <h3>Performance Optimizations</h3>
@@ -805,17 +796,6 @@
             </div>
         </div>
 
-        <h3>Design Trade-offs</h3>
-        <p><strong>Denormalization Decision:</strong> We chose NOT to denormalize by storing director names directly in the movies table, even though Query 5 frequently joins these tables. Reasons:</p>
-        <ul style="margin-left: 30px; margin-top: 10px;">
-            <li>Movies can have multiple directors (co-directors)</li>
-            <li>Would still need movie_crew table for producers and writers</li>
-            <li>Index on movie_crew(person_id, job) makes joins fast enough</li>
-            <li>Maintaining normalized structure keeps update logic simple</li>
-        </ul>
-
-        <p style="margin-top: 20px;"><strong>Storage Efficiency:</strong> Database size is ~10MB for 15,696 records across 6 tables, well under the 100MB limit. The normalized design prevents redundancy while keeping storage minimal.</p>
-
         <!-- QUERIES -->
         <h2>4. Database Queries</h2>
         <p>The MovieFinder application implements 5 main queries: 2 FULLTEXT searches and 3 complex queries with aggregation, grouping, and nested subqueries.</p>
@@ -833,9 +813,13 @@
     <span class="sql-keyword">YEAR</span>(m.release_date) <span class="sql-keyword">AS</span> year,
     <span class="sql-keyword">LEFT</span>(m.overview, 150) <span class="sql-keyword">AS</span> overview_snippet,
     <span class="sql-keyword">MATCH</span>(m.overview) <span class="sql-keyword">AGAINST</span>(<span class="sql-string">'space'</span>) <span class="sql-keyword">AS</span> relevance_score
-<span class="sql-keyword">FROM</span> movies m
-<span class="sql-keyword">WHERE</span> <span class="sql-keyword">MATCH</span>(m.overview) <span class="sql-keyword">AGAINST</span>(<span class="sql-string">'space'</span> <span class="sql-keyword">IN NATURAL LANGUAGE MODE</span>)
-<span class="sql-keyword">ORDER BY</span> relevance_score <span class="sql-keyword">DESC</span>, m.vote_average <span class="sql-keyword">DESC</span>
+<span class="sql-keyword">FROM</span>
+    movies m
+<span class="sql-keyword">WHERE</span>
+    <span class="sql-keyword">MATCH</span>(m.overview) <span class="sql-keyword">AGAINST</span>(<span class="sql-string">'space'</span> <span class="sql-keyword">IN NATURAL LANGUAGE MODE</span>)
+<span class="sql-keyword">ORDER BY</span>
+    relevance_score <span class="sql-keyword">DESC</span>,
+    m.vote_average <span class="sql-keyword">DESC</span>
 <span class="sql-keyword">LIMIT</span> 20;
         </div>
 
@@ -863,9 +847,13 @@
     <span class="sql-keyword">YEAR</span>(m.release_date) <span class="sql-keyword">AS</span> year,
     m.popularity,
     <span class="sql-keyword">MATCH</span>(m.title) <span class="sql-keyword">AGAINST</span>(<span class="sql-string">'Star'</span>) <span class="sql-keyword">AS</span> relevance_score
-<span class="sql-keyword">FROM</span> movies m
-<span class="sql-keyword">WHERE</span> <span class="sql-keyword">MATCH</span>(m.title) <span class="sql-keyword">AGAINST</span>(<span class="sql-string">'Star'</span> <span class="sql-keyword">IN NATURAL LANGUAGE MODE</span>)
-<span class="sql-keyword">ORDER BY</span> relevance_score <span class="sql-keyword">DESC</span>, m.popularity <span class="sql-keyword">DESC</span>
+<span class="sql-keyword">FROM</span>
+    movies m
+<span class="sql-keyword">WHERE</span>
+    <span class="sql-keyword">MATCH</span>(m.title) <span class="sql-keyword">AGAINST</span>(<span class="sql-string">'Star'</span> <span class="sql-keyword">IN NATURAL LANGUAGE MODE</span>)
+<span class="sql-keyword">ORDER BY</span>
+    relevance_score <span class="sql-keyword">DESC</span>,
+    m.popularity <span class="sql-keyword">DESC</span>
 <span class="sql-keyword">LIMIT</span> 20;
         </div>
 
@@ -889,29 +877,36 @@
     <span class="sql-keyword">COUNT</span>(<span class="sql-keyword">DISTINCT</span> m.movie_id) <span class="sql-keyword">AS</span> movie_count,
     <span class="sql-keyword">SUM</span>(m.revenue) <span class="sql-keyword">AS</span> total_revenue,
     <span class="sql-keyword">ROUND</span>(<span class="sql-keyword">AVG</span>(m.revenue), 0) <span class="sql-keyword">AS</span> avg_revenue
-<span class="sql-keyword">FROM</span> genres g
-<span class="sql-keyword">INNER JOIN</span> movie_genres mg <span class="sql-keyword">ON</span> g.genre_id = mg.genre_id
-<span class="sql-keyword">INNER JOIN</span> movies m <span class="sql-keyword">ON</span> mg.movie_id = m.movie_id
-<span class="sql-keyword">WHERE</span> m.vote_average <span class="sql-keyword">IS NOT NULL</span>
-<span class="sql-keyword">GROUP BY</span> g.genre_id, g.genre_name
-<span class="sql-keyword">HAVING</span> <span class="sql-keyword">COUNT</span>(<span class="sql-keyword">DISTINCT</span> m.movie_id) >= 20
-<span class="sql-keyword">ORDER BY</span> avg_rating <span class="sql-keyword">DESC</span>, movie_count <span class="sql-keyword">DESC</span>;
+<span class="sql-keyword">FROM</span>
+    genres g
+    <span class="sql-keyword">INNER JOIN</span> movie_genres mg <span class="sql-keyword">ON</span> g.genre_id = mg.genre_id
+    <span class="sql-keyword">INNER JOIN</span> movies m <span class="sql-keyword">ON</span> mg.movie_id = m.movie_id
+<span class="sql-keyword">WHERE</span>
+    m.vote_average <span class="sql-keyword">IS NOT NULL</span>
+<span class="sql-keyword">GROUP BY</span>
+    g.genre_id,
+    g.genre_name
+<span class="sql-keyword">HAVING</span>
+    <span class="sql-keyword">COUNT</span>(<span class="sql-keyword">DISTINCT</span> m.movie_id) >= 20
+<span class="sql-keyword">ORDER BY</span>
+    avg_rating <span class="sql-keyword">DESC</span>,
+    movie_count <span class="sql-keyword">DESC</span>;
         </div>
 
         <p><strong>Indices Used:</strong> <span class="highlight">idx_movie_genres_genre</span>, <span class="highlight">idx_movie_vote_average</span></p>
 
         <p><strong>Sample Results:</strong></p>
         <div class="result-box">
-            <div class="result-item">1. <strong>Animation</strong> | Avg Rating: 7.26 | Movies: 75 | Total Revenue: $32,323,910,888</div>
-            <div class="result-item">2. <strong>Drama</strong> | Avg Rating: 7.07 | Movies: 142 | Total Revenue: $23,040,959,331</div>
-            <div class="result-item">3. <strong>Mystery</strong> | Avg Rating: 7.04 | Movies: 34 | Total Revenue: $4,672,801,448</div>
-            <div class="result-item">4. <strong>Adventure</strong> | Avg Rating: 7.00 | Movies: 156 | Total Revenue: $90,115,754,088</div>
-            <div class="result-item">5. <strong>Family</strong> | Avg Rating: 7.00 | Movies: 95 | Total Revenue: $35,498,392,461</div>
+            <div class="result-item">1. <strong>Animation</strong> | Avg Rating: 7.26 | Movies: 75 | Total Revenue: $32,323,910,888 | Avg Revenue: $430,985,478</div>
+            <div class="result-item">2. <strong>Drama</strong> | Avg Rating: 7.07 | Movies: 142 | Total Revenue: $23,040,959,331 | Avg Revenue: $162,260,979</div>
+            <div class="result-item">3. <strong>Mystery</strong> | Avg Rating: 7.04 | Movies: 34 | Total Revenue: $4,672,801,448 | Avg Revenue: $137,435,337</div>
+            <div class="result-item">4. <strong>Adventure</strong> | Avg Rating: 7.00 | Movies: 156 | Total Revenue: $90,115,754,088 | Avg Revenue: $577,536,885</div>
+            <div class="result-item">5. <strong>Family</strong> | Avg Rating: 7.00 | Movies: 95 | Total Revenue: $35,498,392,461 | Avg Revenue: $373,667,289</div>
         </div>
 
         <!-- QUERY 4 -->
         <h3>4.4 Query 4: Actor Collaboration Finder</h3>
-        <p><span class="badge badge-complex">COMPLEX</span> - Uses: Nested Query, EXISTS, Self-Join, GROUP BY, HAVING</p>
+        <p><span class="badge badge-complex">COMPLEX</span> - Uses: Self-Join, GROUP BY, HAVING, Aggregation</p>
         <p><strong>Purpose:</strong> Find actors who frequently work together in multiple movies.</p>
         <p><strong>Use Case:</strong> Find all actors who appeared in at least 2 movies with Tom Hanks.</p>
 
@@ -924,23 +919,23 @@
         <span class="sql-keyword">ORDER BY</span> m.vote_average <span class="sql-keyword">DESC</span>
         <span class="sql-keyword">SEPARATOR</span> <span class="sql-string">', '</span>
     ) <span class="sql-keyword">AS</span> movie_titles
-<span class="sql-keyword">FROM</span> people p1
-<span class="sql-keyword">INNER JOIN</span> movie_cast mc1 <span class="sql-keyword">ON</span> p1.person_id = mc1.person_id
-<span class="sql-keyword">INNER JOIN</span> movie_cast mc2 <span class="sql-keyword">ON</span> mc1.movie_id = mc2.movie_id
-<span class="sql-keyword">INNER JOIN</span> people p2 <span class="sql-keyword">ON</span> mc2.person_id = p2.person_id
-<span class="sql-keyword">INNER JOIN</span> movies m <span class="sql-keyword">ON</span> mc1.movie_id = m.movie_id
+<span class="sql-keyword">FROM</span>
+    people p1
+    <span class="sql-keyword">INNER JOIN</span> movie_cast mc1 <span class="sql-keyword">ON</span> p1.person_id = mc1.person_id
+    <span class="sql-keyword">INNER JOIN</span> movie_cast mc2 <span class="sql-keyword">ON</span> mc1.movie_id = mc2.movie_id
+    <span class="sql-keyword">INNER JOIN</span> people p2 <span class="sql-keyword">ON</span> mc2.person_id = p2.person_id
+    <span class="sql-keyword">INNER JOIN</span> movies m <span class="sql-keyword">ON</span> mc1.movie_id = m.movie_id
 <span class="sql-keyword">WHERE</span>
     p1.name <span class="sql-keyword">LIKE</span> <span class="sql-string">'%Tom Hanks%'</span>
     <span class="sql-keyword">AND</span> p2.person_id != p1.person_id
-    <span class="sql-keyword">AND EXISTS</span> (
-        <span class="sql-keyword">SELECT</span> 1
-        <span class="sql-keyword">FROM</span> movie_cast mc3
-        <span class="sql-keyword">WHERE</span> mc3.movie_id = mc1.movie_id
-          <span class="sql-keyword">AND</span> mc3.person_id = p2.person_id
-    )
-<span class="sql-keyword">GROUP BY</span> p2.person_id, p2.name
-<span class="sql-keyword">HAVING</span> <span class="sql-keyword">COUNT</span>(<span class="sql-keyword">DISTINCT</span> mc2.movie_id) >= 2
-<span class="sql-keyword">ORDER BY</span> collaboration_count <span class="sql-keyword">DESC</span>, p2.name
+<span class="sql-keyword">GROUP BY</span>
+    p2.person_id,
+    p2.name
+<span class="sql-keyword">HAVING</span>
+    <span class="sql-keyword">COUNT</span>(<span class="sql-keyword">DISTINCT</span> mc2.movie_id) >= 2
+<span class="sql-keyword">ORDER BY</span>
+    collaboration_count <span class="sql-keyword">DESC</span>,
+    p2.name
 <span class="sql-keyword">LIMIT</span> 20;
         </div>
 
@@ -964,22 +959,33 @@
     <span class="sql-keyword">YEAR</span>(m.release_date) <span class="sql-keyword">AS</span> year,
     m.revenue,
     (
-        <span class="sql-keyword">SELECT</span> <span class="sql-keyword">GROUP_CONCAT</span>(p_cast.name <span class="sql-keyword">ORDER BY</span> mc.cast_order <span class="sql-keyword">SEPARATOR</span> <span class="sql-string">', '</span>)
-        <span class="sql-keyword">FROM</span> movie_cast mc
-        <span class="sql-keyword">INNER JOIN</span> people p_cast <span class="sql-keyword">ON</span> mc.person_id = p_cast.person_id
-        <span class="sql-keyword">WHERE</span> mc.movie_id = m.movie_id
-          <span class="sql-keyword">AND</span> mc.cast_order < 3
-        <span class="sql-keyword">ORDER BY</span> mc.cast_order
+        <span class="sql-keyword">SELECT</span>
+            <span class="sql-keyword">GROUP_CONCAT</span>(p_cast.name <span class="sql-keyword">ORDER BY</span> mc.cast_order <span class="sql-keyword">SEPARATOR</span> <span class="sql-string">', '</span>)
+        <span class="sql-keyword">FROM</span>
+            movie_cast mc
+            <span class="sql-keyword">INNER JOIN</span> people p_cast <span class="sql-keyword">ON</span> mc.person_id = p_cast.person_id
+        <span class="sql-keyword">WHERE</span>
+            mc.movie_id = m.movie_id
+            <span class="sql-keyword">AND</span> mc.cast_order < 3
+        <span class="sql-keyword">ORDER BY</span>
+            mc.cast_order
     ) <span class="sql-keyword">AS</span> top_cast
-<span class="sql-keyword">FROM</span> movies m
-<span class="sql-keyword">INNER JOIN</span> movie_crew mcr <span class="sql-keyword">ON</span> m.movie_id = mcr.movie_id
-<span class="sql-keyword">INNER JOIN</span> people p_dir <span class="sql-keyword">ON</span> mcr.person_id = p_dir.person_id
+<span class="sql-keyword">FROM</span>
+    movies m
+    <span class="sql-keyword">INNER JOIN</span> movie_crew mcr <span class="sql-keyword">ON</span> m.movie_id = mcr.movie_id
+    <span class="sql-keyword">INNER JOIN</span> people p_dir <span class="sql-keyword">ON</span> mcr.person_id = p_dir.person_id
 <span class="sql-keyword">WHERE</span>
     p_dir.name <span class="sql-keyword">LIKE</span> <span class="sql-string">'%Christopher Nolan%'</span>
     <span class="sql-keyword">AND</span> mcr.job = <span class="sql-string">'Director'</span>
     <span class="sql-keyword">AND</span> m.vote_average >= 7.0
-<span class="sql-keyword">GROUP BY</span> m.movie_id, m.title, m.vote_average, m.release_date, m.revenue
-<span class="sql-keyword">ORDER BY</span> m.vote_average <span class="sql-keyword">DESC</span>
+<span class="sql-keyword">GROUP BY</span>
+    m.movie_id,
+    m.title,
+    m.vote_average,
+    m.release_date,
+    m.revenue
+<span class="sql-keyword">ORDER BY</span>
+    m.vote_average <span class="sql-keyword">DESC</span>
 <span class="sql-keyword">LIMIT</span> 20;
         </div>
 
