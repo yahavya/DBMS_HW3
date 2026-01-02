@@ -1,126 +1,127 @@
-# MovieFinder - DBMS Assignment 3
+# DBMS Assignment 3
 
-A movie discovery web application database built with MySQL and Python, powered by TMDb API data.
+A movie discovery database application built with MySQL and Python, powered by TMDb API data.
+
+## Quick Start
+
+### 1. Prerequisites
+- Python 3.8+
+- MySQL Server access (via SSH tunnel to `mysqlsrv1.cs.tau.ac.il`)
+- TMDb API key ([Get one here](https://www.themoviedb.org/settings/api))
+
+### 2. Installation
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### 3. Configuration
+
+Create a `.env` file in the project root:
+
+```env
+# TMDb API Configuration
+TMDB_API_KEY=your_tmdb_api_key_here
+
+# MySQL Database Configuration
+DB_HOST=127.0.0.1
+DB_PORT=3305
+DB_USER=your_username
+DB_PASSWORD=your_password
+DB_NAME=your_database_name
+```
+
+**Note:** If using SSH tunnel:
+```bash
+ssh -L 3305:mysqlsrv1.cs.tau.ac.il:3306 your_username@nova.cs.tau.ac.il
+```
+
+### 4. Setup Database
+
+```bash
+# Step 1: Create database schema (10 seconds)
+python src/create_db_script.py
+
+# Step 2: Populate database (30-45 minutes - be patient!)
+python src/api_data_retrieve.py
+
+# Step 3: Test queries
+python src/queries_execution.py
+```
 
 ## Project Structure
 
 ```
-dbms_assignment3/
+DBMS_HW3/
 ├── src/
 │   ├── create_db_script.py      # Database schema creation
 │   ├── api_data_retrieve.py     # Data fetching and population
-│   ├── queries_db_script.py     # Query functions
+│   ├── queries_db_script.py     # 5 query functions
 │   └── queries_execution.py     # Query demonstrations
 ├── documentation/
 │   ├── name_and_id.txt          # Team member information
-│   ├── user_manual.pdf          # User manual with mockups
-│   ├── system_docs.pdf          # System documentation
-│   └── mysql_and_user_password.txt  # Database credentials
+│   ├── mysql_and_user_password.txt  # MySQL credentials
+│   ├── user_manual.html         # User manual (convert to PDF)
+│   ├── system_docs.html         # System docs (convert to PDF)
+│   ├── user_manual_template.md  # User manual source
+│   └── system_docs_template.md   # System docs source
 └── requirements.txt             # Python dependencies
 ```
 
-## Setup Instructions
+## Database Schema
 
-### 1. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 2. Configure Database Credentials
-
-Edit the following files and add your MySQL credentials:
-- `src/create_db_script.py` (lines 12-14)
-- `src/api_data_retrieve.py` (lines 16-20)
-- `src/queries_execution.py` (lines 12-16)
-
-Update the `user` and `password` fields with your assigned MySQL credentials for `mysqlsrv1.cs.tau.ac.il`.
-
-### 3. Create Database Schema
-
-```bash
-python src/create_db_script.py
-```
-
-This will create:
-- Database: `movie_db`
-- 6 tables: movies, genres, movie_genres, people, movie_cast, movie_crew
-- Indices for query optimization (including FULLTEXT indices)
-
-### 4. Populate Database
-
-**IMPORTANT:** This step takes 30-45 minutes due to API rate limiting.
-
-```bash
-python src/api_data_retrieve.py
-```
-
-This will fetch and insert:
-- ~1000 movies
-- ~20 genres
-- ~2000+ actors/directors
-- ~19,000+ total records across all tables
-
-### 5. Run Query Demonstrations
-
-```bash
-python src/queries_execution.py
-```
-
-This demonstrates all 5 main queries with example parameters.
+**6 Tables:**
+- `movies` - Movie details (title, overview, ratings, revenue, etc.)
+- `genres` - Movie genres
+- `movie_genres` - Junction table (many-to-many)
+- `people` - Actors, directors, and crew members
+- `movie_cast` - Cast members for each movie
+- `movie_crew` - Crew members (directors, producers, writers)
 
 ## Queries Implemented
 
 ### Query 1: Full-Text Search by Overview (FULLTEXT)
 Search movies by plot keywords and themes.
+```python
+query_1(connection, "space exploration")
+```
 
 ### Query 2: Full-Text Search by Title (FULLTEXT)
 Find movies by title keywords.
+```python
+query_2(connection, "Star")
+```
 
-### Query 3: Genre Analysis with Aggregation (Complex)
+### Query 3: Genre Analysis (Complex - GROUP BY, Aggregation)
 Analyze genres by average rating, movie count, and revenue.
+```python
+query_3(connection, min_movies=20)
+```
 
-### Query 4: Actor Collaboration Finder (Complex)
+### Query 4: Actor Collaboration Finder (Complex - Self-Join, EXISTS)
 Find actors who frequently work together.
+```python
+query_4(connection, "Tom Hanks", min_collaborations=2)
+```
 
-### Query 5: Director's Best Films with Cast (Complex)
+### Query 5: Director's Best Films (Complex - Nested Query)
 Explore a director's highest-rated films and their casts.
-
-## Database Schema
-
-### Tables
-1. **movies** - Movie details (title, overview, ratings, revenue, etc.)
-2. **genres** - Movie genres
-3. **movie_genres** - Junction table for many-to-many relationship
-4. **people** - Actors, directors, and crew members
-5. **movie_cast** - Cast members for each movie
-6. **movie_crew** - Crew members (directors, producers, writers)
-
-### Key Indices
-- FULLTEXT indices on `movies.overview` and `movies.title`
-- Regular indices on frequently queried fields
-- Composite index on `movie_crew(person_id, job)`
-
-## Technologies Used
-
-- **Database:** MySQL 5.7+ (on mysqlsrv1.cs.tau.ac.il)
-- **Language:** Python 3.14
-- **API:** The Movie Database (TMDb) API v3
-- **Libraries:** mysql-connector-python, requests
-
-## Notes
-
-- The TMDb API key is embedded in `api_data_retrieve.py`
-- All database operations are performed on the remote MySQL server
-- The database is designed to 3NF (Third Normal Form)
-- Proper foreign keys and constraints are implemented
-- SQL injection protection through parameterized queries
-
-## Authors
-
-See `documentation/name_and_id.txt` for team member information.
+```python
+query_5(connection, "Christopher Nolan", min_rating=7.0)
+```
 
 ## Documentation
 
-- **User Manual:** `documentation/user_manual.pdf` - Application features and mockups
-- **System Documentation:** `documentation/system_docs.pdf` - Schema design, query explanations, and technical details
+- **User Manual:** `documentation/user_manual.html` (convert to PDF)
+- **System Documentation:** `documentation/system_docs.html` (convert to PDF)
+- **Team Info:** `documentation/name_and_id.txt`
+- **MySQL Credentials:** `documentation/mysql_and_user_password.txt`
+
+## Authors
+- **Yaron Yahav**
+- **Saar Molina** 
+
+## License
+
+This project is for educational purposes only.

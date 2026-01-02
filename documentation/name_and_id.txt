@@ -1,14 +1,9 @@
 Team Members:
 
 Student 1:
-Name: [YOUR NAME]
-ID: [YOUR ID NUMBER]
+Name: Yaron Yahav 
+ID: 322715632
 
 Student 2:
-Name: [PARTNER'S NAME]
-ID: [PARTNER'S ID NUMBER]
-
-Project: MovieFinder - Movie Discovery Database Application
-Course: Database Management Systems
-Assignment: Assignment 3
-Date: January 2026
+Name: Saar Molina
+ID: 206968216

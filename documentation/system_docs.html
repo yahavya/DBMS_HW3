@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MovieFinder Database - Technical Report</title>
+    <title>System Documentation</title>
     <style>
         * {
             margin: 0;
@@ -29,7 +29,7 @@
 
         h1 {
             color: #2c3e50;
-            font-size: 2.5em;
+            font-size: 2em;
             margin-bottom: 10px;
             border-bottom: 4px solid #3498db;
             padding-bottom: 15px;
@@ -225,6 +225,11 @@
             color: white;
         }
 
+        .badge-btree {
+            background: #3498db;
+            color: white;
+        }
+
         .badge-complex {
             background: #e74c3c;
             color: white;
@@ -263,14 +268,16 @@
 </head>
 <body>
     <div class="container">
-        <h1>MovieFinder Database</h1>
-        <p class="subtitle">Technical Database Report - Schema, Queries & Analysis</p>
-        <p><strong>Database:</strong> yarony @ mysqlsrv1.cs.tau.ac.il</p>
-        <p><strong>Generated:</strong> December 26, 2025</p>
+        <h1>
+            System Documentation
+        </h1>
+        <p class="subtitle">Database Management Systems - Assignment 3</p>
+        <p class="authors"><strong>Authors:</strong> Saar Molina &amp; Yaron Yahav</p>
+        <p><strong>Date:</strong> January 18, 2026</p>
 
         <!-- DATABASE OVERVIEW -->
         <h2>1. Database Overview</h2>
-        <p>MovieFinder is a comprehensive movie discovery application database that stores movie information from The Movie Database (TMDb) API. The database is designed to support complex queries for finding movies by keywords, analyzing genre performance, discovering actor collaborations, and exploring director filmographies.</p>
+        <p>Our project is a comprehensive movie discovery database that stores movie information from The Movie Database (TMDb) API. The database is designed to support queries for finding movies by keywords, analyzing genre performance, discovering actor collaborations, and exploring director filmographies.</p>
 
         <div class="stats-grid">
             <div class="stat-card">
@@ -289,6 +296,7 @@
 
         <!-- RECORD COUNTS -->
         <h3>1.1 Record Distribution by Table</h3>
+        
         <table>
             <thead>
                 <tr>
@@ -335,70 +343,142 @@
         <h2>2. Database Schema Design</h2>
 
         <h3>2.1 Entity-Relationship Overview</h3>
-        <div class="er-diagram">
-            <div style="text-align: center;">
-                <div class="table-box">
-                    <div class="table-name">movies</div>
-                    <div class="table-field"><span class="pk">movie_id (PK)</span></div>
-                    <div class="table-field">title</div>
-                    <div class="table-field">overview</div>
-                    <div class="table-field">release_date</div>
-                    <div class="table-field">runtime</div>
-                    <div class="table-field">budget</div>
-                    <div class="table-field">revenue</div>
-                    <div class="table-field">vote_average</div>
-                    <div class="table-field">vote_count</div>
-                    <div class="table-field">popularity</div>
-                    <div class="table-field">original_language</div>
-                </div>
+        <div class="er-diagram" style="text-align: center; overflow-x: auto;">
+            <svg width="900" height="450" viewBox="0 0 900 450" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                        <path d="M0,0 L0,6 L9,3 z" fill="#7f8c8d" />
+                    </marker>
+                    <marker id="crowsfoot" markerWidth="12" markerHeight="12" refX="12" refY="6" orient="auto">
+                        <path d="M0,0 L12,6 L0,12 M12,6 L0,6" stroke="#7f8c8d" stroke-width="1.5" fill="none"/>
+                    </marker>
+                </defs>
 
-                <div class="relationship">↕ 1:N</div>
+                <style>
+                    .table-rect { fill: #ffffff; stroke: #3498db; stroke-width: 2px; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.1)); }
+                    .table-header { font-family: sans-serif; font-weight: bold; font-size: 14px; fill: #2c3e50; }
+                    .table-text { font-family: sans-serif; font-size: 11px; fill: #555; }
+                    .pk-text { font-weight: bold; fill: #e74c3c; }
+                    .fk-text { font-style: italic; fill: #f39c12; }
+                    .line { stroke: #7f8c8d; stroke-width: 2px; }
+                </style>
 
-                <div class="table-box">
-                    <div class="table-name">movie_genres</div>
-                    <div class="table-field"><span class="pk">movie_id (PK, FK)</span></div>
-                    <div class="table-field"><span class="pk">genre_id (PK, FK)</span></div>
-                </div>
+                <g transform="translate(350, 150)">
+                    <rect class="table-rect" width="160" height="130" rx="5" ry="5"/>
+                    <text x="80" y="20" text-anchor="middle" class="table-header">movies</text>
+                    <line x1="0" y1="30" x2="160" y2="30" stroke="#3498db" stroke-width="1"/>
+                    <text x="10" y="50" class="table-text pk-text">PK movie_id</text>
+                    <text x="10" y="70" class="table-text">title, overview</text>
+                    <text x="10" y="90" class="table-text">release_date</text>
+                    <text x="10" y="110" class="table-text">revenue, rating</text>
+                </g>
 
-                <div class="relationship">↕ N:1</div>
+                <g transform="translate(20, 180)">
+                    <rect class="table-rect" width="120" height="70" rx="5" ry="5"/>
+                    <text x="60" y="20" text-anchor="middle" class="table-header">genres</text>
+                    <line x1="0" y1="30" x2="120" y2="30" stroke="#3498db" stroke-width="1"/>
+                    <text x="10" y="50" class="table-text pk-text">PK genre_id</text>
+                    <text x="10" y="65" class="table-text">name</text>
+                </g>
 
-                <div class="table-box">
-                    <div class="table-name">genres</div>
-                    <div class="table-field"><span class="pk">genre_id (PK)</span></div>
-                    <div class="table-field">genre_name</div>
-                </div>
+                <g transform="translate(190, 180)">
+                    <rect class="table-rect" width="120" height="70" rx="5" ry="5"/>
+                    <text x="60" y="20" text-anchor="middle" class="table-header">movie_genres</text>
+                    <line x1="0" y1="30" x2="120" y2="30" stroke="#3498db" stroke-width="1"/>
+                    <text x="10" y="50" class="table-text pk-text fk-text">PK,FK movie_id</text>
+                    <text x="10" y="65" class="table-text pk-text fk-text">PK,FK genre_id</text>
+                </g>
 
-                <div style="margin-top: 30px;"></div>
+                <g transform="translate(760, 180)">
+                    <rect class="table-rect" width="120" height="70" rx="5" ry="5"/>
+                    <text x="60" y="20" text-anchor="middle" class="table-header">people</text>
+                    <line x1="0" y1="30" x2="120" y2="30" stroke="#3498db" stroke-width="1"/>
+                    <text x="10" y="50" class="table-text pk-text">PK person_id</text>
+                    <text x="10" y="65" class="table-text">name</text>
+                </g>
 
-                <div class="table-box">
-                    <div class="table-name">people</div>
-                    <div class="table-field"><span class="pk">person_id (PK)</span></div>
-                    <div class="table-field">name</div>
-                    <div class="table-field">popularity</div>
-                </div>
+                <g transform="translate(560, 60)">
+                    <rect class="table-rect" width="150" height="100" rx="5" ry="5"/>
+                    <text x="75" y="20" text-anchor="middle" class="table-header">movie_cast</text>
+                    <line x1="0" y1="30" x2="150" y2="30" stroke="#3498db" stroke-width="1"/>
+                    <text x="10" y="50" class="table-text pk-text">PK id</text>
+                    <text x="10" y="70" class="table-text fk-text">FK movie_id</text>
+                    <text x="10" y="90" class="table-text fk-text">FK person_id</text>
+                </g>
 
-                <div class="relationship">↕ 1:N</div>
+                <g transform="translate(560, 280)">
+                    <rect class="table-rect" width="150" height="100" rx="5" ry="5"/>
+                    <text x="75" y="20" text-anchor="middle" class="table-header">movie_crew</text>
+                    <line x1="0" y1="30" x2="150" y2="30" stroke="#3498db" stroke-width="1"/>
+                    <text x="10" y="50" class="table-text pk-text">PK id</text>
+                    <text x="10" y="70" class="table-text fk-text">FK movie_id</text>
+                    <text x="10" y="90" class="table-text fk-text">FK person_id</text>
+                </g>
 
-                <div class="table-box">
-                    <div class="table-name">movie_cast</div>
-                    <div class="table-field"><span class="pk">id (PK)</span></div>
-                    <div class="table-field"><span class="fk">movie_id (FK)</span></div>
-                    <div class="table-field"><span class="fk">person_id (FK)</span></div>
-                    <div class="table-field">character_name</div>
-                    <div class="table-field">cast_order</div>
-                </div>
+                <line x1="140" y1="215" x2="190" y2="215" class="line" marker-end="url(#crowsfoot)" />
+                <text x="150" y="205" font-size="10" fill="#555">1</text>
+                <text x="180" y="205" font-size="10" fill="#555">N</text>
 
-                <div style="display: inline-block; margin: 0 30px;">
-                    <div class="table-box">
-                        <div class="table-name">movie_crew</div>
-                        <div class="table-field"><span class="pk">id (PK)</span></div>
-                        <div class="table-field"><span class="fk">movie_id (FK)</span></div>
-                        <div class="table-field"><span class="fk">person_id (FK)</span></div>
-                        <div class="table-field">job</div>
-                        <div class="table-field">department</div>
-                    </div>
-                </div>
-            </div>
+                <line x1="350" y1="215" x2="310" y2="215" class="line" marker-end="url(#crowsfoot)" />
+                <text x="340" y="205" font-size="10" fill="#555">1</text>
+                <text x="320" y="205" font-size="10" fill="#555">N</text>
+
+                <line x1="430" y1="150" x2="430" y2="110" class="line" />
+                <line x1="430" y1="110" x2="560" y2="110" class="line" marker-end="url(#crowsfoot)" />
+                <text x="440" y="145" font-size="10" fill="#555">1</text>
+                <text x="550" y="100" font-size="10" fill="#555">N</text>
+
+                <line x1="820" y1="180" x2="820" y2="110" class="line" />
+                <line x1="820" y1="110" x2="710" y2="110" class="line" marker-end="url(#crowsfoot)" />
+                <text x="830" y="170" font-size="10" fill="#555">1</text>
+                <text x="720" y="100" font-size="10" fill="#555">N</text>
+
+                <line x1="430" y1="280" x2="430" y2="330" class="line" />
+                <line x1="430" y1="330" x2="560" y2="330" class="line" marker-end="url(#crowsfoot)" />
+                <text x="440" y="295" font-size="10" fill="#555">1</text>
+                <text x="550" y="320" font-size="10" fill="#555">N</text>
+
+                <line x1="820" y1="250" x2="820" y2="330" class="line" />
+                <line x1="820" y1="330" x2="710" y2="330" class="line" marker-end="url(#crowsfoot)" />
+                <text x="830" y="265" font-size="10" fill="#555">1</text>
+                <text x="720" y="320" font-size="10" fill="#555">N</text>
+
+            </svg>
+        </div>
+
+        <h3>2.1.1 Relationship Summary</h3>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Entity1</th>
+                        <th>Entity2</th>
+                        <th>Cardinality</th>
+                        <th>Link Table</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Movies</td>
+                        <td>Genres</td>
+                        <td>Many-to-Many</td>
+                        <td>movie_genres</td>
+                    </tr>
+                    <tr>
+                        <td>Movies</td>
+                        <td>People</td>
+                        <td>Many-to-Many</td>
+                        <td>movie_cast</td>
+                    </tr>
+                    <tr>
+                        <td>Movies</td>
+                        <td>People</td>
+                        <td>Many-to-Many</td>
+                        <td>movie_crew</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
         <h3>2.2 Table Schemas</h3>
@@ -552,7 +632,6 @@
                 </tr>
             </tbody>
         </table>
-        <p><em>This junction table implements the many-to-many relationship between movies and genres. Each movie can have multiple genres, and each genre applies to multiple movies.</em></p>
 
         <h4>Table: people</h4>
         <table>
@@ -696,48 +775,55 @@
 
         <div class="index-list">
             <div class="index-item">
-                <strong>idx_movie_overview</strong> (FULLTEXT on movies.overview)<br>
                 <span class="badge badge-fulltext">FULLTEXT</span>
+                <strong>idx_movie_overview</strong> (FULLTEXT on movies.overview)<br>
                 <p>Enables full-text search on movie descriptions for Query 1. Supports natural language keyword matching with relevance scoring.</p>
             </div>
 
             <div class="index-item">
-                <strong>idx_movie_title</strong> (FULLTEXT on movies.title)<br>
                 <span class="badge badge-fulltext">FULLTEXT</span>
+                <strong>idx_movie_title</strong> (FULLTEXT on movies.title)<br>
                 <p>Enables full-text search on movie titles for Query 2. Supports fuzzy title matching.</p>
             </div>
 
             <div class="index-item">
+                <span class="badge badge-btree">B-tree</span>
                 <strong>idx_movie_vote_average</strong> (B-tree on movies.vote_average)<br>
                 <p>Optimizes filtering movies by rating threshold in Query 3 and Query 5.</p>
             </div>
 
             <div class="index-item">
+                <span class="badge badge-btree">B-tree</span>
                 <strong>idx_movie_release_date</strong> (B-tree on movies.release_date)<br>
                 <p>Optimizes time-based queries and year extraction operations.</p>
             </div>
 
             <div class="index-item">
+                <span class="badge badge-btree">B-tree</span>
                 <strong>idx_movie_cast_person</strong> (B-tree on movie_cast.person_id)<br>
                 <p>Optimizes joins between movie_cast and people tables in Query 4.</p>
             </div>
 
             <div class="index-item">
+                <span class="badge badge-btree">B-tree</span>
                 <strong>idx_movie_cast_order</strong> (B-tree on movie_cast.cast_order)<br>
                 <p>Optimizes filtering top-billed actors in Query 5.</p>
             </div>
 
             <div class="index-item">
+                <span class="badge badge-btree">B-tree</span>
                 <strong>idx_movie_crew_person_job</strong> (Composite B-tree on movie_crew.person_id, movie_crew.job)<br>
                 <p>Optimizes director lookups in Query 5. Composite index covers both person and job filter.</p>
             </div>
 
             <div class="index-item">
+                <span class="badge badge-btree">B-tree</span>
                 <strong>idx_movie_genres_genre</strong> (B-tree on movie_genres.genre_id)<br>
                 <p>Optimizes genre-based joins in Query 3.</p>
             </div>
 
             <div class="index-item">
+                <span class="badge badge-btree">B-tree</span>
                 <strong>idx_people_name</strong> (B-tree on people.name)<br>
                 <p>Optimizes name-based searches in Query 4 and Query 5.</p>
             </div>
@@ -798,7 +884,7 @@
 
         <!-- QUERIES -->
         <h2>4. Database Queries</h2>
-        <p>The MovieFinder application implements 5 main queries: 2 FULLTEXT searches and 3 complex queries with aggregation, grouping, and nested subqueries.</p>
+        <p>Our project implements 5 main queries: 2 FULLTEXT searches and 3 complex queries with aggregation, grouping, and nested subqueries.</p>
 
         <!-- QUERY 1 -->
         <h3>4.1 Query 1: Full-Text Search by Movie Overview</h3>
@@ -1062,124 +1148,18 @@
             </tbody>
         </table>
 
-        <h3>5.2 TMDb API Integration</h3>
-
-        <h4>API Configuration</h4>
-        <div class="result-box">
-            <p><strong>Base URL:</strong> https://api.themoviedb.org/3</p>
-            <p><strong>Authentication:</strong> API Key (v3) - Configured via environment variable (TMDB_API_KEY)</p>
-            <p><strong>Rate Limiting:</strong> 4 requests per second (250ms delay between calls)</p>
-        </div>
-
-        <h4>API Endpoints Used</h4>
+       <h3>5.2 API Integration Strategy</h3>
+        <p><strong>Source:</strong> The Movie Database (TMDb) API v3.</p>
         <table>
-            <thead>
-                <tr>
-                    <th>Endpoint</th>
-                    <th>Purpose</th>
-                    <th>Usage</th>
-                </tr>
-            </thead>
+            <thead><tr><th>Endpoint</th><th>Purpose</th><th>Mapping Strategy</th></tr></thead>
             <tbody>
-                <tr>
-                    <td><code>GET /genre/movie/list</code></td>
-                    <td>Fetch all movie genres</td>
-                    <td>Called once at start to populate genres table</td>
-                </tr>
-                <tr>
-                    <td><code>GET /discover/movie</code></td>
-                    <td>Discover popular movies (paginated)</td>
-                    <td>Called 25 times (25 pages × 20 movies/page = 500 movies)</td>
-                </tr>
-                <tr>
-                    <td><code>GET /movie/{id}?append_to_response=credits</code></td>
-                    <td>Get detailed movie info with cast & crew</td>
-                    <td>Called 500 times (once per movie). Using append_to_response reduces API calls by 50% by getting credits in same request</td>
-                </tr>
+                <tr><td><code>/genre/movie/list</code></td><td>Genre Reference</td><td>Populates <code>genres</code> table.</td></tr>
+                <tr><td><code>/discover/movie</code></td><td>Batch Retrieval</td><td>Iterates through pages to find top 500 popular movies.</td></tr>
+                <tr><td><code>/movie/{id}</code></td><td>Deep Details</td><td>Fetches runtime, budget, revenue for <code>movies</code> table.</td></tr>
+                <tr><td><code>...credits</code></td><td>Cast & Crew</td><td>Mapped to <code>movie_cast</code> (limit top 8) and <code>movie_crew</code> (filtered by Job).</td></tr>
             </tbody>
         </table>
-
-        <h4>API Data Mapping to Database</h4>
-        <div class="index-list">
-            <div class="index-item">
-                <strong>Movies Table</strong><br>
-                <p>Populated from <code>/movie/{id}</code> response:</p>
-                <ul style="margin-left: 20px; margin-top: 10px;">
-                    <li>id → movie_id (primary key)</li>
-                    <li>title, overview, release_date, runtime → direct mapping</li>
-                    <li>budget, revenue, vote_average, vote_count, popularity → direct mapping</li>
-                    <li>original_language → stored as ISO 639-1 code</li>
-                </ul>
-            </div>
-
-            <div class="index-item">
-                <strong>Genres</strong><br>
-                <p>From <code>/genre/movie/list</code> and movie details:</p>
-                <ul style="margin-left: 20px; margin-top: 10px;">
-                    <li>genres array → populate genres table (id, name)</li>
-                    <li>Each movie's genre_ids → populate movie_genres junction table</li>
-                </ul>
-            </div>
-
-            <div class="index-item">
-                <strong>Cast and Crew</strong><br>
-                <p>From credits object in movie details:</p>
-                <ul style="margin-left: 20px; margin-top: 10px;">
-                    <li>credits.cast[0-7] → movie_cast (limited to top 8 actors per movie)</li>
-                    <li>credits.crew filtered by job (Director, Producer, Writer) → movie_crew</li>
-                    <li>Person data → people table (avoiding duplicates with ON DUPLICATE KEY UPDATE)</li>
-                </ul>
-            </div>
-        </div>
-
-        <h3>5.3 Error Handling and Reliability</h3>
-        <div class="index-list">
-            <div class="index-item">
-                <strong>API Rate Limiting</strong><br>
-                <p>Implemented exponential backoff retry logic for 429 (Too Many Requests) responses. Waits as specified in Retry-After header, with maximum 3 retries per request.</p>
-            </div>
-
-            <div class="index-item">
-                <strong>Network Errors</strong><br>
-                <p>All API calls wrapped in try-except blocks catching requests.exceptions.RequestException. Failed requests are logged and skipped without crashing the entire population process.</p>
-            </div>
-
-            <div class="index-item">
-                <strong>Database Transactions</strong><br>
-                <p>All insert operations use connection.commit() on success and connection.rollback() on error to maintain database consistency. Foreign key constraints prevent orphaned records.</p>
-            </div>
-
-            <div class="index-item">
-                <strong>NULL Handling</strong><br>
-                <p>All optional fields gracefully handle NULL values from API using .get() with default values. Date parsing handles invalid date strings by returning NULL rather than crashing.</p>
-            </div>
-        </div>
-
-        <h3>5.4 Data Population Statistics</h3>
-        <div class="result-box">
-            <p><strong>Total API Calls:</strong> ~526 requests (1 genres + 25 discover pages + 500 movie details)</p>
-            <p><strong>Execution Time:</strong> ~30-40 minutes (limited by 250ms delay between requests)</p>
-            <p><strong>Success Rate:</strong> >99% (rare failures due to network issues are gracefully handled)</p>
-            <p><strong>Database Size:</strong> ~10MB (well under 100MB limit)</p>
-        </div>
-
-        <!-- CONCLUSION -->
-        <h2>6. Summary</h2>
-        <p>The MovieFinder database successfully implements a normalized schema with 6 tables containing 15,696 total records. The database supports sophisticated movie discovery queries through:</p>
-        <ul style="margin-left: 30px; margin-top: 15px;">
-            <li>2 FULLTEXT indices enabling natural language search on movie titles and descriptions</li>
-            <li>7 B-tree indices optimizing joins, filtering, and aggregation operations</li>
-            <li>Proper normalization (3NF) with junction tables for many-to-many relationships</li>
-            <li>Foreign key constraints maintaining referential integrity with CASCADE deletes</li>
-            <li>Complex queries demonstrating GROUP BY, aggregation, nested subqueries, and EXISTS clauses</li>
-        </ul>
-
-        <p style="margin-top: 20px;">All data was sourced from The Movie Database (TMDb) API and populated using Python scripts with comprehensive error handling and rate limiting.</p>
-
-        <div style="margin-top: 50px; padding-top: 20px; border-top: 2px solid #ecf0f1; text-align: center; color: #7f8c8d;">
-            <p>MovieFinder Database Technical Report</p>
-            <p>Database: yarony @ mysqlsrv1.cs.tau.ac.il</p>
-        </div>
+        <p><em>Note: The scripts implement rate limiting (4 req/sec) and transaction management (commit/rollback) to ensure data consistency.</em></p>
     </div>
 </body>
 </html>

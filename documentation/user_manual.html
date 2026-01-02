@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MovieFinder - User Manual</title>
+    <title>User Manual</title>
     <style>
         * {
             margin: 0;
@@ -29,7 +29,7 @@
 
         h1 {
             color: #2c3e50;
-            font-size: 2.5em;
+            font-size: 2em;
             margin-bottom: 10px;
             border-bottom: 4px solid #3498db;
             padding-bottom: 15px;
@@ -47,8 +47,11 @@
         h3 {
             color: #2c3e50;
             font-size: 1.3em;
-            margin-top: 25px;
             margin-bottom: 15px;
+        }
+
+        h4 {
+            margin-top: 15px;
         }
 
         .subtitle {
@@ -325,29 +328,18 @@
 </head>
 <body>
     <div class="container">
-        <h1>MovieFinder</h1>
-        <p class="subtitle">User Manual - Discover Your Next Favorite Film</p>
-
-        <div class="version-info">
-            <strong>Version:</strong> 1.0<br>
-            <strong>Date:</strong> January 2026<br>
-            <strong>Course:</strong> Database Management Systems - Assignment 3
-        </div>
+        <h1>
+            User Manual
+        </h1>
+        <p class="subtitle">Database Management Systems - Assignment 3</p>
+        <p class="authors"><strong>Authors:</strong> Saar Molina &amp; Yaron Yahav</p>
+        <p><strong>Date:</strong> January 18, 2026</p>
 
         <!-- APPLICATION OVERVIEW -->
         <h2>1. Application Overview</h2>
-
-        <h3>What is MovieFinder?</h3>
         <p>MovieFinder is a web application designed for <strong>movie enthusiasts</strong> who want to discover and explore films based on various criteria such as plot themes, actors, directors, genres, and ratings. The application provides powerful search and analysis tools to help users find their next favorite movie.</p>
-
-        <h3>Target Audience</h3>
-        <ul>
-            <li><strong>Movie Fans:</strong> People looking to discover new movies based on their interests</li>
-            <li><strong>Film Students:</strong> Users researching movies, directors, and actor collaborations</li>
-            <li><strong>Casual Browsers:</strong> Anyone exploring movies by genre, ratings, or popularity</li>
-        </ul>
-
-        <h3>Key Capabilities</h3>
+        <p> </p>
+        <h4>Key Capabilities</h3>
         <ul>
             <li>Search movies by plot keywords and themes</li>
             <li>Find movies by title</li>
@@ -356,54 +348,43 @@
             <li>Explore director filmographies</li>
         </ul>
 
-        <!-- APPLICATION FEATURES -->
+        <!-- APPLICATION FEATURES (Detailed, simplified styling) -->
         <h2>2. Application Features</h2>
 
-        <div class="feature-card">
-            <h3>Feature 1: Plot Keyword Search</h3>
-            <p>Search for movies by entering keywords related to the plot or theme. For example:</p>
-            <ul style="margin-top: 10px;">
-                <li>"space exploration"</li>
-                <li>"time travel"</li>
-                <li>"artificial intelligence"</li>
-            </ul>
-            <p style="margin-top: 15px;">The system searches through movie descriptions and ranks results by relevance and rating.</p>
-            <p><strong>Use Case:</strong> Finding all sci-fi movies about space exploration</p>
-            <div class="query-badge">Query Used: Full-Text Search on Movie Overview</div>
+        <div class="how-to-section">
+            <h3>Feature 1 — Plot Keyword Search</h3>
+            <p>Search movies by keywords in the plot overview using MySQL FULLTEXT. Example inputs: "space exploration", "time travel", "artificial intelligence". Results are ranked by match relevance and then by rating.</p>
+            <p><strong>Example:</strong> search for <em>"space"</em> returns Interstellar, WALL·E, The Martian, etc.</p>
+            <p><strong>Use Case:</strong> Discover themed movies (e.g., sci‑fi about space).</p>
+            <div class="backend-query">Backend Query: query_1(connection, keywords)</div>
         </div>
 
-        <div class="feature-card">
-            <h3>Feature 2: Title Search</h3>
-            <p>Quickly find movies by searching for keywords in the title. The search supports partial matches and ranks by relevance.</p>
-            <p style="margin-top: 15px;"><strong>Use Case:</strong> Finding all movies with "Star" in the title (Star Wars, Star Trek, etc.)</p>
-            <div class="query-badge">Query Used: Full-Text Search on Movie Title</div>
+        <div class="how-to-section">
+            <h3>Feature 2 — Title Search</h3>
+            <p>Full-text search over `movies.title` to find exact or partial title matches. Useful for quick lookups and fuzzy title matching.</p>
+            <p><strong>Example:</strong> search for <em>"Star"</em> returns Star Wars, Star Trek, etc.</p>
+            <div class="backend-query">Backend Query: query_2(connection, search_term)</div>
         </div>
 
-        <div class="feature-card">
-            <h3>Feature 3: Genre Analytics Dashboard</h3>
-            <p>View comprehensive statistics for each genre including:</p>
-            <ul style="margin-top: 10px;">
-                <li>Average rating</li>
-                <li>Number of movies</li>
-                <li>Total and average revenue</li>
-            </ul>
-            <p style="margin-top: 15px;">Filter by minimum number of movies to focus on well-represented genres.</p>
-            <p><strong>Use Case:</strong> Discovering which genres tend to have the highest-rated content</p>
-            <div class="query-badge">Query Used: Aggregation with GROUP BY and HAVING</div>
+        <div class="how-to-section">
+            <h3>Feature 3 — Genre Analytics</h3>
+            <p>Aggregated metrics per genre: average rating, movie count, total and average revenue. Can filter to genres with at least N movies to avoid small-sample noise.</p>
+            <p><strong>Use Case:</strong> Rank genres by average rating or revenue to identify top-performing categories.</p>
+            <div class="backend-query">Backend Query: query_3(connection, min_movies)</div>
         </div>
 
-        <div class="feature-card">
-            <h3>Feature 4: Actor Collaboration Finder</h3>
-            <p>Discover which actors frequently work together. Enter an actor's name and find all their collaborators who have appeared in multiple movies with them.</p>
-            <p style="margin-top: 15px;"><strong>Use Case:</strong> Finding all actors who have worked with Tom Hanks in 3 or more movies</p>
-            <div class="query-badge">Query Used: Nested Query with EXISTS</div>
+        <div class="how-to-section">
+            <h3>Feature 4 — Actor Collaboration Finder</h3>
+            <p>Find actors who co-appear frequently with a given actor. The query uses self-joins on `movie_cast` and groups by co-actor to count shared movies.</p>
+            <p><strong>Use Case:</strong> List actors who worked with "Tom Hanks" at least 2 times.</p>
+            <div class="backend-query">Backend Query: query_4(connection, actor_name, min_collaborations)</div>
         </div>
 
-        <div class="feature-card">
-            <h3>Feature 5: Director Filmography Explorer</h3>
-            <p>Explore a director's highest-rated films along with their top cast members. Filter by minimum rating to see only their best work.</p>
-            <p style="margin-top: 15px;"><strong>Use Case:</strong> Viewing Christopher Nolan's films rated 8.0 or higher with their lead actors</p>
-            <div class="query-badge">Query Used: Complex JOIN with Nested Subquery</div>
+        <div class="how-to-section">
+            <h3>Feature 5 — Director Filmography Explorer</h3>
+            <p>List a director's films meeting a minimum rating threshold and include top-billed cast. Uses joins between `movies`, `movie_crew` (filtered by job = 'Director') and a nested subquery on `movie_cast` to collect lead actors.</p>
+            <p><strong>Use Case:</strong> Show Christopher Nolan's films rated ≥ 7.0 with top 3 cast members.</p>
+            <div class="backend-query">Backend Query: query_5(connection, director_name, min_rating)</div>
         </div>
 
         <!-- USER INTERFACE MOCKUPS -->
@@ -652,92 +633,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- HOW TO USE -->
-        <h2>4. How to Use Each Feature</h2>
-
-        <div class="how-to-section">
-            <h3>Using Plot Keyword Search</h3>
-            <ol>
-                <li>From the home page, click <strong>"Search by Plot Keywords"</strong></li>
-                <li>Enter keywords describing the plot or theme (e.g., "time travel", "heist")</li>
-                <li>Click <strong>Search</strong></li>
-                <li>Browse results ranked by relevance and rating</li>
-                <li>Click <strong>View Details</strong> on any movie for more information</li>
-            </ol>
-            <div class="backend-query">Backend Query: query_1(connection, keywords)</div>
-        </div>
-
-        <div class="how-to-section">
-            <h3>Using Title Search</h3>
-            <ol>
-                <li>From the home page, click <strong>"Search by Movie Title"</strong></li>
-                <li>Enter a word or phrase from the movie title</li>
-                <li>Click <strong>Search</strong></li>
-                <li>Results show movies with matching titles, ranked by relevance</li>
-                <li>Click on any movie to view details</li>
-            </ol>
-            <div class="backend-query">Backend Query: query_2(connection, search_term)</div>
-        </div>
-
-        <div class="how-to-section">
-            <h3>Using Genre Analytics</h3>
-            <ol>
-                <li>From the home page, click <strong>"Genre Analytics"</strong></li>
-                <li>Select minimum number of movies to filter genres (default: 20)</li>
-                <li>View the table showing:
-                    <ul style="margin-top: 5px;">
-                        <li>Average rating per genre</li>
-                        <li>Number of movies in each genre</li>
-                        <li>Total revenue by genre</li>
-                    </ul>
-                </li>
-                <li>Sort by any column to analyze different aspects</li>
-            </ol>
-            <div class="backend-query">Backend Query: query_3(connection, min_movies)</div>
-        </div>
-
-        <div class="how-to-section">
-            <h3>Finding Actor Collaborations</h3>
-            <ol>
-                <li>From the home page, click <strong>"Actor Collaborations"</strong></li>
-                <li>Enter an actor's name</li>
-                <li>Set minimum number of collaborations (default: 2)</li>
-                <li>Click <strong>Search</strong></li>
-                <li>View list of actors who frequently worked together</li>
-                <li>See the movies they appeared in together</li>
-            </ol>
-            <div class="backend-query">Backend Query: query_4(connection, actor_name, min_collaborations)</div>
-        </div>
-
-        <div class="how-to-section">
-            <h3>Exploring Director Filmography</h3>
-            <ol>
-                <li>From the home page, click <strong>"Director Filmography"</strong></li>
-                <li>Enter a director's name</li>
-                <li>Set minimum rating threshold (default: 7.0)</li>
-                <li>Click <strong>Search</strong></li>
-                <li>View the director's highest-rated films</li>
-                <li>See top cast members for each film</li>
-                <li>View revenue information</li>
-            </ol>
-            <div class="backend-query">Backend Query: query_5(connection, director_name, min_rating)</div>
-        </div>
-
-        <!-- CONCLUSION -->
-        <h2>5. Conclusion</h2>
-        <p>MovieFinder provides a comprehensive and intuitive interface for movie discovery and analysis. Each feature is powered by efficient database queries that leverage full-text search, complex joins, and aggregations to deliver fast, relevant results.</p>
-
-        <p style="margin-top: 20px;">For technical documentation and implementation details, please refer to the <strong>System Documentation</strong>.</p>
-
-        <div class="note-box">
-            <strong>Note:</strong> This is a documentation-only submission. The actual web interface is not implemented, but all backend queries are fully functional and tested with real data from The Movie Database (TMDb) API.
-        </div>
-
-        <div style="margin-top: 50px; padding-top: 20px; border-top: 2px solid #ecf0f1; text-align: center; color: #7f8c8d;">
-            <p>MovieFinder User Manual</p>
-            <p>Version 1.0 - January 2026</p>
         </div>
     </div>
 </body>
