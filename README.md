@@ -113,8 +113,8 @@ query_5(connection, "Christopher Nolan", min_rating=7.0)
 
 ## Documentation
 
-- **User Manual:** `documentation/user_manual.html` (convert to PDF)
-- **System Documentation:** `documentation/system_docs.html` (convert to PDF)
+- **User Manual:** `documentation/user_manual.html` 
+- **System Documentation:** `documentation/system_docs.html` 
 - **Team Info:** `documentation/name_and_id.txt`
 - **MySQL Credentials:** `documentation/mysql_and_user_password.txt`
 
